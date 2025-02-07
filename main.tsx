@@ -3,72 +3,57 @@ import React, { useEffect, useState } from "react";
 
 const WordScramble = () => {
   const words = [
-    "REACT",
-    "GAME",
-    "PUZZLE",
-    "CODE",
-    "PLAY",
+    // 3 letters
+    "CAT",
+    "DOG",
+    "SUN",
+    "RUN",
     "FUN",
-    "WORD",
-    "TIME",
-    "SCORE",
-    "WIN",
-    "DREAM",
-    "CLOUD",
-    "MUSIC",
-    "DANCE",
-    "SMILE",
-    "LAUGH",
-    "SHINE",
-    "SPARK",
-    "GLOW",
-    "PIXEL",
-    "BYTES",
-    "ARRAY",
-    "LOGIC",
-    "STACK",
-    "QUEUE",
-    "NODES",
-    "GRAPH",
-    "CYBER",
-    "MAGIC",
-    "STORM",
-    "FROST",
-    "FLAME",
-    "OCEAN",
-    "RIVER",
-    "EARTH",
-    "SPACE",
-    "STARS",
-    "SWIFT",
-    "BRAVE",
-    "POWER",
-    "LIGHT",
-    "SOUND",
-    "PEACE",
+    "HAT",
+    "BOX",
+    "MAP",
+    "CUP",
+    "BAG",
+    // 4 letters
+    "FISH",
+    "MOON",
+    "STAR",
+    "BOOK",
+    "DESK",
+    "JUMP",
+    "CAKE",
+    "BIRD",
+    "HOME",
+    "TREE",
+    // 5 letters (common words)
     "HAPPY",
-    "SMART",
-    "QUICK",
-    "BLOOM",
-    "FRESH",
-    "SWEET",
-    "SPICE",
-    "CANDY",
-    "CREAM",
-    "SUGAR",
-    "HONEY",
-    "JUICE",
+    "SMILE",
+    "LIGHT",
+    "PARTY",
+    "WATER",
+    "MUSIC",
+    "PHONE",
+    "HOUSE",
+    "CLOUD",
+    "DANCE",
+    // Few longer words for challenge
+    "RAINBOW",
+    "MORNING",
+    "SUMMER",
+    "GARDEN",
+    "COOKIE",
   ];
 
   const [currentWord, setCurrentWord] = useState("");
   const [scrambledWord, setScrambledWord] = useState("");
   const [userInput, setUserInput] = useState("");
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(45); // Increased time to 45 seconds
   const [gameActive, setGameActive] = useState(false);
   const [message, setMessage] = useState("Press Start to play!");
   const [highScore, setHighScore] = useState(0);
   const [usedWords, setUsedWords] = useState(new Set());
+  const [showHint, setShowHint] = useState(false);
 
   const scrambleWord = (word) => {
     const array = word.split("");
@@ -95,26 +80,38 @@ const WordScramble = () => {
     setCurrentWord(word);
     setScrambledWord(scrambled);
     setUsedWords((prev) => new Set([...prev, word]));
+    setShowHint(false);
   };
 
   const startGame = () => {
     setScore(0);
-    setTimeLeft(30);
+    setTimeLeft(45);
     setGameActive(true);
     setMessage("Unscramble the word!");
     setUserInput("");
     setUsedWords(new Set());
+    setShowHint(false);
     getNewWord();
   };
 
   const checkAnswer = () => {
     if (userInput.toUpperCase() === currentWord) {
-      setScore((prev) => prev + 1);
-      setMessage("Correct! 🎉");
+      const pointsEarned = showHint ? 1 : 2; // Less points if hint was used
+      setScore((prev) => prev + pointsEarned);
+      setMessage(`Correct! ${showHint ? "+1 point" : "+2 points"} 🎉`);
       setUserInput("");
       getNewWord();
     } else {
       setMessage("Try again! 🤔");
+    }
+  };
+
+  const getHint = () => {
+    if (!showHint) {
+      setShowHint(true);
+      setMessage(
+        `First letter is ${currentWord[0]} (using hints gives less points)`
+      );
     }
   };
 
@@ -140,6 +137,12 @@ const WordScramble = () => {
     }
   };
 
+  const skipWord = () => {
+    setMessage("Word skipped! No points lost 👍");
+    getNewWord();
+    setUserInput("");
+  };
+
   return (
     <div className="p-6 max-w-sm mx-auto bg-gray-800 rounded-xl shadow-lg space-y-4 text-gray-100">
       <div className="text-center space-y-2">
@@ -157,12 +160,15 @@ const WordScramble = () => {
             <div className="text-3xl font-bold tracking-wide text-cyan-400">
               {scrambledWord}
             </div>
+            <div className="text-sm text-gray-400">
+              Length: {currentWord.length} letters
+            </div>
             <input
               type="text"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value.toUpperCase())}
               onKeyPress={handleKeyPress}
-              className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-center uppercase 
+              className="text-stone-900 placeholder:text-stone-500 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-center uppercase 
                        focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-100 
                        placeholder-gray-400"
               maxLength={currentWord.length}
@@ -174,7 +180,7 @@ const WordScramble = () => {
         <p className="text-sm text-gray-300">{message}</p>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center space-x-2">
         <button
           onClick={gameActive ? checkAnswer : startGame}
           className="px-6 py-2 bg-purple-700 text-purple-100 rounded-lg 
@@ -182,6 +188,26 @@ const WordScramble = () => {
         >
           {gameActive ? "Submit" : "Start"}
         </button>
+        {gameActive && (
+          <>
+            <button
+              onClick={getHint}
+              disabled={showHint}
+              className="px-4 py-2 bg-blue-700 text-blue-100 rounded-lg 
+                       hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed
+                       font-medium transition-colors"
+            >
+              Hint
+            </button>
+            <button
+              onClick={skipWord}
+              className="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg 
+                       hover:bg-gray-600 font-medium transition-colors"
+            >
+              Skip
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
