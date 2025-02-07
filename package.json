@@ -1,0 +1,27 @@
+{
+  "name": "fusion-game",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "build": "./node_modules/.bin/esbuild main.tsx --bundle --format=iife --global-name=pluginModule --external:apyf --external:react --global:react=React --outfile=main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apyf": "^1.0.8",
+    "lucide-react": "^0.474.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "esbuild": "^0.24.2",
+    "esbuild-plugin-globals": "^0.2.0",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "react": "18.3.1"
+  }
+}

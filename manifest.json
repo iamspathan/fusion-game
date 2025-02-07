@@ -1,0 +1,8 @@
+{
+  "id": "fusion-game",
+  "name": "Fusion Game",
+  "description": "A lightweight, fun word scramble game extension",
+  "author": "ApyHub",
+  "version": "0.0.2",
+  "minAppVersion": "0.20.1"
+}
