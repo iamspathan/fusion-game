@@ -1,8 +1,8 @@
 {
-  "id": "md-preview",
-  "name": "Markdown Preview",
-  "description": "Allows you to switch an active Markdown document between edit and preview modes",
+  "id": "fusion-game",
+  "name": "Fusion Game",
+  "description": "An exciting fusion game where players combine elements",
   "author": "ApyHub",
-  "version": "0.0.1",
-  "minAppVersion": "0.20.1"
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0"
 }
